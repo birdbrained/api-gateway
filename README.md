@@ -11,3 +11,5 @@ NGiNX is used as a caching server, and also routes requests to a lightweight nod
 To run, install NGiNX, and add the provided `.conf` files to their correct locations, and start the proxy. Next, run the node app on the port specified in the NGiNX configuration.
 
 In the share-analytics application, be sure to specify the url for SHARE as the now locally running proxy.
+
+A `systemctl` file is provided to manage the node process.
