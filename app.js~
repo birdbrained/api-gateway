@@ -33,15 +33,18 @@ http.createServer(function(request, response){
                     hostname: "share.osf.io",
                     method: "GET",
                     port: 443,
-                    path: "/api/v2/search/agents/" + item.key
+                    path: "/api/v2/agents/" + item.key + "/"
                 }, function(resp) {
                     
                     var item_details = "";
 
                     resp.on("data", function(chunk) {
+                        console.log("got data")
 			if (chunk) {
                             item_details += chunk;
                         }
+			console.log("FOR" + item.key + "GOT CHUNK" + chunk);
+                        console.log(item_details);
                     });
 
                     resp.on("end", function() {
@@ -50,10 +53,9 @@ http.createServer(function(request, response){
 				console.log(item_details);
 				return;
 			}
-                        console.log(item_details);
-			var details = JSON.parse(item_details);
-                        if (!details._source) {
-                            details._source = {
+                        var details = JSON.parse(item_details);
+                        if (!details.data.attributes) {
+                            details.data.attributes = {
                                 name: "",
                                 id: item.key,
                                 sources: [],
@@ -64,7 +66,7 @@ http.createServer(function(request, response){
                             };
                         }
 
-                        ids[index] = details._source;
+                        ids[index] = details.data.attributes;
                         ids[index].number = item.doc_count;
 
                         if (item.awards) {
@@ -75,11 +77,14 @@ http.createServer(function(request, response){
                             return;
                         }
 
+			console.log ("\n\n\n RESPONSE \n\n\n");
+
                         response.end(JSON.stringify(ids));
 
                     });
 
                 })
+		debugger;
 		share_req.on("error", function(e) {
 
                     console.log("got error: " + e.message);
